@@ -104,33 +104,121 @@ Tensor parallelism splits individual layers across multiple GPUs:
 - ✅ **Automatic Mixed Precision** (FP16/BF16) support
 - ✅ **Zero Memory Fragmentation** through smart memory management
 
-## 🔄 Project Workflow
+## 🔄 Complete Project Workflow
 
 ```mermaid
 graph TD
-    A[🏗️ Setup RunPod Instance] --> B[🔧 Environment Installation]
-    B --> C[🧹 Cache Cleanup]
-    C --> D[⚙️ Configure Multi-GPU]
-    D --> E[🚀 Launch Training]
-    E --> F[📊 Monitor Progress]
-    F --> G[🎯 Model Evaluation]
-    G --> H[📦 Deploy Model]
+    A[📋 Project Planning] --> B[🏗️ RunPod Instance Setup]
+    B --> C[🔧 Environment Installation]
+    C --> D[📥 Repository Clone & Setup]
+    D --> E[🧹 Cache Cleanup]
+    E --> F[⚙️ Multi-GPU Configuration]
+    F --> G[🔍 Hardware Verification]
+    G --> H[🚀 Training Launch]
+    H --> I[📊 Real-time Monitoring]
+    I --> J[🎯 Performance Analysis]
+    J --> K[💾 Model Saving]
+    K --> L[📈 Benchmarking]
+    L --> M[📦 Production Deployment]
 
-    style A fill:#e1f5fe
-    style E fill:#f3e5f5
-    style H fill:#e8f5e8
+    style A fill:#fff3e0
+    style H fill:#f3e5f5
+    style M fill:#e8f5e8
 ```
 
-### 📋 Step-by-Step Workflow
+### 📋 Detailed Workflow Steps
 
-1. **🏗️ Infrastructure Setup** → [RunPod Setup Guide](./docs/runpod_setup.md)
-2. **🔧 Environment Preparation** → Run setup scripts
-3. **🧹 Cache Management** → Clean Unsloth cache for multi-GPU
-4. **⚙️ GPU Configuration** → Configure accelerate for distributed training
-5. **🚀 Training Execution** → Launch multi-GPU training scripts
-6. **📊 Real-time Monitoring** → TensorBoard metrics and cost tracking
-7. **🎯 Model Validation** → Performance benchmarking and evaluation
-8. **📦 Production Deployment** → Model serving and containerization
+#### Phase 1: Infrastructure & Setup
+1. **📋 Project Planning**
+   - Review requirements and cost estimates
+   - Select appropriate GPU configuration
+   - Plan training dataset and model size
+
+2. **🏗️ RunPod Instance Setup** → [Complete Setup Guide](./docs/runpod_setup.md)
+   - Create RunPod account and add payment method
+   - Select GPU instance (2x A6000 recommended)
+   - Configure SSH keys and security settings
+
+3. **🔧 Environment Installation**
+   ```bash
+   # Update system and install dependencies
+   apt update && apt upgrade -y
+   pip install torch torchvision torchaudio
+   pip install unsloth transformers accelerate
+   ```
+
+4. **📥 Repository Clone & Setup**
+   ```bash
+   git clone git@github.com:AmitNaikRepository/Multi_GPU_deployement.git
+   cd Multi_GPU_deployement
+   chmod +x scripts/*.sh
+   ```
+
+#### Phase 2: Configuration & Preparation
+5. **🧹 Cache Management**
+   ```bash
+   # Critical: Remove Unsloth cache for multi-GPU compatibility
+   ./scripts/cleanup_cache.sh
+   ```
+
+6. **⚙️ Multi-GPU Configuration**
+   ```bash
+   # Configure accelerate for distributed training
+   accelerate config
+   # Select: multi-GPU, 2 GPUs, bf16 precision
+   ```
+
+7. **🔍 Hardware Verification**
+   ```bash
+   # Verify GPU setup and memory
+   nvidia-smi
+   python -c "import torch; print(f'GPUs: {torch.cuda.device_count()}')"
+   ```
+
+#### Phase 3: Training & Monitoring
+8. **🚀 Training Launch**
+   ```bash
+   # Launch distributed training
+   accelerate launch --config_file accelerate_config.yaml \
+     src/main.py --config configs/dual_gpu.yaml
+   ```
+
+9. **📊 Real-time Monitoring**
+   - TensorBoard dashboard: `https://<pod-id>:6006/proxy/6006/`
+   - GPU utilization: `watch nvidia-smi`
+   - Cost tracking: RunPod dashboard
+
+10. **🎯 Performance Analysis**
+    - Monitor loss curves and training metrics
+    - Track GPU utilization and memory usage
+    - Validate training speed improvements
+
+#### Phase 4: Completion & Deployment
+11. **💾 Model Saving**
+    ```bash
+    # Save trained model locally
+    model.save_pretrained_merge("output_model", tokenizer, save_method="merged_16bit")
+    ```
+
+12. **📈 Benchmarking**
+    ```bash
+    # Run performance benchmarks
+    python scripts/benchmark_latency.py --comprehensive
+    ```
+
+13. **📦 Production Deployment**
+    - Containerize model with Docker
+    - Deploy to production infrastructure
+    - Set up monitoring and scaling
+
+### 🔧 Key Commands Summary
+```bash
+# Quick start sequence
+git clone <repo> && cd Multi_GPU_deployement
+./scripts/cleanup_cache.sh
+accelerate config
+accelerate launch src/main.py --config configs/dual_gpu.yaml
+```
 
 ## 📁 Project Architecture
 
