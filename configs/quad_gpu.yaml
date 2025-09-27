@@ -1,0 +1,38 @@
+# Model configuration - 4 GPU setup  
+model:
+  name: "Qwen/Qwen2.5-7B-Instruct"  # Larger model for 4 GPUs
+  max_seq_length: 4096
+  dtype: null
+  load_in_4bit: false
+  load_in_8bit: false
+
+# LoRA configuration
+lora:
+  rank: 64              # Higher rank for better capacity
+  alpha: 64
+  target_modules:
+    - "q_proj"
+    - "k_proj"
+    - "v_proj"
+    - "o_proj" 
+    - "gate_proj"
+    - "up_proj"
+    - "down_proj"
+  dropout: 0.0
+
+# Dataset configuration
+dataset:
+  name: "synthetic" 
+  eval_dataset: null
+  max_samples: null     # Full dataset
+
+# Training hyperparameters
+training:
+  epochs: 3
+  batch_size: 2         # Higher per-device batch size
+  target_batch_size: 64 # Large effective batch size
+  learning_rate: 1e-4   # Lower LR for stability with large batch
+
+# Additional settings  
+enable_thinking: false
+save_model: true

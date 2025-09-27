@@ -1,0 +1,38 @@
+# Model configuration
+model:
+  name: "Qwen/Qwen2.5-3B-Instruct"
+  max_seq_length: 4096
+  dtype: null  # Will use bf16/fp16 automatically
+  load_in_4bit: false
+  load_in_8bit: false
+
+# LoRA configuration
+lora:
+  rank: 32
+  alpha: 32
+  target_modules: 
+    - "q_proj"
+    - "k_proj" 
+    - "v_proj"
+    - "o_proj"
+    - "gate_proj"
+    - "up_proj"
+    - "down_proj"
+  dropout: 0.0
+
+# Dataset configuration  
+dataset:
+  name: "synthetic"
+  eval_dataset: null  # Use same dataset for eval
+  max_samples: null   # Use full dataset
+
+# Training hyperparameters
+training:
+  epochs: 3
+  batch_size: 1
+  target_batch_size: 32  # Effective batch size via gradient accumulation
+  learning_rate: 2e-4
+  
+# Additional settings
+enable_thinking: false
+save_model: true
